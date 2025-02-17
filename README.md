@@ -1,4 +1,3 @@
-Below is an example **README.md** file in English that you can add to your GitHub repository:
 
 ---
 
