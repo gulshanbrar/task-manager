@@ -116,4 +116,3 @@ Contributions to TaskHub are welcome! Feel free to open an issue or submit a pul
 This project is licensed under the [MIT License](LICENSE).
 
 
-Feel free to adjust any sections according to your project’s specific needs. Once ready, add this file to your repository and share your project with the community!
