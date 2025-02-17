@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- REMIXICONS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css"
+    />
+    <!-- FONT AWESOME PER LE ICONE -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-..."
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css" />
+    <title>Dashboard con Sidebar e Task Manager</title>
+  </head>
+  <body>
+    <!--=============== HEADER ===============-->
+    <header class="header" id="header">
+      <div class="header__container">
+        <button id="header-toggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <form class="search-container" action="https://www.google.com/search" method="GET">
+          <input type="text" name="q" placeholder="Cerca la tua task" />
+          <button type="submit">Cerca</button>
+        </form>
+        <a href="#" class="header__logo">
+          <i class="ri-dashboard-fill"></i>
+          <span>TaskHub</span>
+        </a>
+      </div>
+    </header>
+
+    <!--=============== SIDEBAR ===============-->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar__container">
+        <div class="sidebar__user">
+          <div class="sidebar__img">
+            <img id="sidebar-profile-img" src="perfil.png" alt="Profilo" />
+          </div>
+          <div class="sidebar__info">
+            <h3 id="sidebar-user-name">Gulshan</h3>
+            <span id="sidebar-user-email">Brar123@gmail.com</span>
+          </div>
+        </div>
+        <div class="sidebar__content">
+          <div>
+            <h3 class="sidebar__title">MANAGE</h3>
+            <div class="sidebar__list">
+              <a href="?section=dashboard" class="sidebar__link" data-section="dashboard">
+                <i class="ri-home-4-fill"></i>
+                <span>Dashboard</span>
+              </a>
+              <a href="?section=todo" class="sidebar__link" data-section="todo">
+                <i class="ri-task-fill"></i>
+                <span>To Do List</span>
+              </a>
+              <a href="?section=task-manager" class="sidebar__link" data-section="task-manager">
+                <i class="ri-calendar-check-fill"></i>
+                <span>Task Manager</span>
+              </a>
+              <a href="?section=pomodoro" class="sidebar__link" data-section="pomodoro">
+                <i class="ri-timer-fill"></i>
+                <span>Pomodoro</span>
+              </a>
+            </div>
+          </div>
+          <div>
+            <h3 class="sidebar__title">SETTINGS</h3>
+            <div class="sidebar__list">
+              <a href="?section=profile" class="sidebar__link" data-section="profile">
+                <i class="ri-user-fill"></i>
+                <span>Profile</span>
+              </a>
+              <a href="?section=notifications" class="sidebar__link" data-section="notifications">
+                <i class="ri-notification-fill"></i>
+                <span>Notifications</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar__actions">
+          <button id="theme-button" class="sidebar__link theme-toggle">
+            <i class="fa-solid fa-moon"></i>
+            <span>Theme</span>
+          </button>
+          <button class="sidebar__link">
+            <i class="ri-logout-box-fill"></i>
+            <span>Log Out</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!--=============== MAIN ===============-->
+    <main class="main container" id="main">
+      <section id="content">
+        <!-- SEZIONE DASHBOARD -->
+        <div class="section dashboard-section" id="section-dashboard">
+          <h1>Dashboard</h1>
+          <p>Benvenuto nella Dashboard! Qui puoi avere una panoramica delle tue attività.</p>
+          <!-- Sezione Task Status con Donut Graphs -->
+          <div class="task-status-container neumorphic">
+            <h2>Task Status</h2>
+            <div class="charts-container">
+              <div class="chart">
+                <canvas id="donut-completed"></canvas>
+                <p>Completate</p>
+              </div>
+              <div class="chart">
+                <canvas id="donut-inprogress"></canvas>
+                <p>In Corso</p>
+              </div>
+              <div class="chart">
+                <canvas id="donut-notstarted"></canvas>
+                <p>Da Iniziare</p>
+              </div>
+            </div>
+          </div>
+          <!-- Sezione Tasks in Scadenza Questa Settimana (card) -->
+          <div class="due-tasks-container neumorphic">
+            <h2>Task in Scadenza Questa Settimana</h2>
+            <div id="due-tasks-cards" class="cards-container">
+              <!-- Le card verranno inserite dinamicamente -->
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE TO DO LIST -->
+        <div class="section" id="section-todo" style="display: none;">
+          <h1>To Do List</h1>
+          <div class="todo-container neumorphic">
+            <div class="todo-input">
+              <input type="text" id="todo-input" placeholder="Aggiungi un nuovo to do..." />
+              <button id="add-todo">
+                <i class="ri-add-line"></i> Aggiungi
+              </button>
+            </div>
+            <ul id="todo-list"></ul>
+          </div>
+        </div>
+
+        <!-- SEZIONE TASK MANAGER -->
+        <div class="section" id="section-task-manager" style="display: none;">
+          <h1>Task Manager</h1>
+          <div class="task-manager-container neumorphic">
+            <button id="toggle-task-form" class="expand-task-btn">
+              <i class="ri-add-line"></i> Nuovo Task
+            </button>
+            <div class="task-form-container">
+              <form id="task-form">
+                <div class="form-group">
+                  <label for="task-title">Titolo</label>
+                  <input type="text" id="task-title" placeholder="Inserisci il titolo" required />
+                </div>
+                <div class="form-group">
+                  <label for="task-description">Descrizione</label>
+                  <textarea id="task-description" placeholder="Inserisci la descrizione" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="task-date">Data</label>
+                  <input type="date" id="task-date" required />
+                </div>
+                <div class="form-group">
+                  <label for="task-priority">Priorità</label>
+                  <select id="task-priority" required>
+                    <option value="low">Bassa</option>
+                    <option value="medium">Media</option>
+                    <option value="high">Alta</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="task-status">Stato</label>
+                  <select id="task-status" required>
+                    <option value="Da iniziare">Da iniziare</option>
+                    <option value="In corso">In corso</option>
+                    <option value="Completata">Completata</option>
+                  </select>
+                </div>
+                <button type="submit" id="add-task">
+                  <i class="ri-add-line"></i>
+                  <span id="task-form-btn-text">Aggiungi Task</span>
+                </button>
+              </form>
+            </div>
+            <ul id="task-list"></ul>
+          </div>
+        </div>
+
+        <!-- SEZIONE POMODORO -->
+        <div class="section" id="section-pomodoro" style="display: none;">
+          <h1>Pomodoro Timer</h1>
+          <div class="pomodoro-container neumorphic">
+            <div class="pomodoro-menu">
+              <button class="pomodoro-mode active" data-mode="pomodoro">Pomodoro</button>
+              <button class="pomodoro-mode" data-mode="short-break">Short Break</button>
+              <button class="pomodoro-mode" data-mode="long-break">Long Break</button>
+              <div class="pomodoro-settings">
+                <button id="pomodoro-settings-btn">
+                  <i class="fa-solid fa-gear"></i>
+                </button>
+                <div id="pomodoro-settings-menu" class="settings-menu">
+                  <form id="pomodoro-settings-form">
+                    <div class="form-group">
+                      <label for="pomodoro-duration">Pomodoro (min)</label>
+                      <input type="number" id="pomodoro-duration" min="1" value="25" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="short-break-duration">Short Break (min)</label>
+                      <input type="number" id="short-break-duration" min="1" value="5" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="long-break-duration">Long Break (min)</label>
+                      <input type="number" id="long-break-duration" min="1" value="15" required>
+                    </div>
+                    <button type="submit">Salva</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="pomodoro-timer">
+              <div class="timer-text">
+                <span id="pomodoro-minutes">25</span>:<span id="pomodoro-seconds">00</span>
+              </div>
+            </div>
+            <div class="pomodoro-controls">
+              <button id="pomodoro-start">Start</button>
+              <button id="pomodoro-pause">Pause</button>
+              <button id="pomodoro-reset">Reset</button>
+            </div>
+            <div class="pomodoro-info">
+              <p id="pomodoro-cycle">Cycle: 0/5</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE PROFILO -->
+        <div class="section profile-section" id="section-profile" style="display: none;">
+          <h1>Profilo</h1>
+          <div class="profile-container neumorphic">
+            <div class="profile-img">
+              <img id="profile-img" src="perfil.png" alt="Foto Profilo" />
+            </div>
+            <form id="profile-form">
+              <div class="form-group">
+                <label for="profile-name">Nome</label>
+                <input type="text" id="profile-name" placeholder="Il tuo nome" required />
+              </div>
+              <div class="form-group">
+                <label for="profile-email">Email</label>
+                <input type="email" id="profile-email" placeholder="La tua email" required />
+              </div>
+              <div class="form-group">
+                <label for="profile-bio">Biografia</label>
+                <textarea id="profile-bio" placeholder="Parlaci di te..."></textarea>
+              </div>
+              <button type="submit" id="save-profile">
+                <i class="ri-save-3-line"></i> Salva Profilo
+              </button>
+            </form>
+            <div id="profile-summary" class="profile-summary"></div>
+          </div>
+        </div>
+
+        <!-- SEZIONE NOTIFICHE -->
+        <div class="section" id="section-notifications" style="display: none;">
+          <h1>Notifiche</h1>
+          <p>Qui potrai gestire le tue notifiche.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+  </body>
+</html>
